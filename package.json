@@ -10,6 +10,8 @@
     "history"      : "*",
     "less"         : "*",
     "rest"         :"1.3.0",
+    "mongoose"     :"4.3.6",
+    "express"      :"*",
     "when"         :"*"
   },
   "browserify": {

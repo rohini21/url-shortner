@@ -8,8 +8,7 @@ var App =  React.createClass({
     }
   },
 	componentDidMount: function() {
-		console.log("in componentDidMount",this.state.url);
-		var url = "google.com";
+	
 	},
 	shortenURL: function(){
 		var url = ReactDOM.findDOMNode(this.refs.input).value;
