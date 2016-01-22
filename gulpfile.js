@@ -35,7 +35,7 @@ var runSequence = require('run-sequence');
 });*/
 
 
-/*gulp.task('webserver', function(){
+gulp.task('webserver', function(){
   gulp.src('./')
     .pipe(plugins.webserver({
       fallback   : 'index.html',
@@ -43,7 +43,7 @@ var runSequence = require('run-sequence');
       livereload : true,
       open       : true
   }))
-})*/
+})
 
 gulp.task('browserify',function(cb) {
   return browserify({
@@ -61,7 +61,7 @@ gulp.task('browserify',function(cb) {
 
 gulp.task('build', function() {
   runSequence(
-    ['browserify']
+    ['browserify'],['webserver']
   );
 });
 

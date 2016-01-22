@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import rest from 'rest';
 
 var App =  React.createClass({
 	 getInitialState: function() {
@@ -8,20 +9,22 @@ var App =  React.createClass({
     }
   },
 	componentDidMount: function() {
-	
 	},
 	shortenURL: function(){
 		var url = ReactDOM.findDOMNode(this.refs.input).value;
-		var shortenedUrl = "http://localhost:8000/#/?_k=iutyxs"+ "/xyz";
-		console.log("in shortenURL",shortenedUrl)
-
-		ReactDOM.findDOMNode(this.refs.output).value = shortenedURL;
+		console.log("in shortenURL",url)
+		rest('http://localhost:9001/?url='+url)
+		.then(function(data){
+			console.log("data-----",data);
+		})
+		/*ReactDOM.findDOMNode(this.refs.output).value = shortenedURL;
 		this.setState({
 			url: url
-		})
+		})*/
 	},
 	render() {
-		return (<div className="container">
+		return (
+			<div className="container">
 				<div className="col-md-6">	
 					<p>Welcome to Snipper</p>
 					<p>Snip your url to a smalller one ;)</p>
@@ -34,7 +37,8 @@ var App =  React.createClass({
 				<div className="col-md-6">
 					<input ref="output" type="text" />
 				</div>
-			</div>)
+			</div>
+		)
 	}
 })
 
