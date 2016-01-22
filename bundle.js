@@ -7,6 +7,16 @@ module.exports = css;
 },{"./../../node_modules/cssify":7}],2:[function(require,module,exports){
 'use strict';
 
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
@@ -14,10 +24,6 @@ Object.defineProperty(exports, "__esModule", {
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _rest = require('rest');
 
@@ -27,34 +33,99 @@ function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-var App = _react2.default.createClass({
-	displayName: 'App',
-
-	getInitialState: function getInitialState() {
-		return {
-			url: ""
-		};
-	},
-	componentDidMount: function componentDidMount() {},
-	shortenURL: function shortenURL() {
-		var url = _reactDom2.default.findDOMNode(this.refs.input).value;
-		console.log("in shortenURL", url);
-		(0, _rest2.default)('http://localhost:9001/?url=' + url).then(function (data) {
-			console.log("data-----", data);
-		});
-		/*ReactDOM.findDOMNode(this.refs.output).value = shortenedURL;
-  this.setState({
-  	url: url
-  })*/
-	},
-	render: function render() {
-		return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement('div', { className: 'col-md-6' }, _react2.default.createElement('p', null, 'Welcome to Snipper'), _react2.default.createElement('p', null, 'Snip your url to a smalller one ;)')), _react2.default.createElement('div', { className: 'col-md-6' }, _react2.default.createElement('input', { ref: 'input', type: 'text' })), _react2.default.createElement('button', { onClick: this.shortenURL }, 'Snip'), _react2.default.createElement('div', null, 'shortened url'), _react2.default.createElement('div', { className: 'col-md-6' }, _react2.default.createElement('input', { ref: 'output', type: 'text' })));
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
 	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && (typeof call === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var mime = require('rest/interceptor/mime');
+var errorCode = require('rest/interceptor/errorCode');
+
+var client = _rest2.default.wrap(mime, {
+	mime: 'application/json'
 });
+
+var App = function (_React$Component) {
+	_inherits(App, _React$Component);
+
+	function App() {
+		_classCallCheck(this, App);
+
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
+
+		_this.state = {
+			url: "no shortened url"
+		};
+		return _this;
+	}
+
+	_createClass(App, [{
+		key: 'shortenURL',
+		value: function shortenURL() {
+			var self = this;
+			var regexObj = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+			var url = this.refs.input.value;
+
+			if (!regexObj.test(url)) {
+				alert("Enter correct URL");
+				return;
+			}
+
+			(0, _rest2.default)('http://localhost:9001/?url=' + url).then(function (data) {
+				self.setState({
+					url: data.entity
+				});
+			});
+		}
+	}, {
+		key: 'test',
+		value: function test() {
+			var self = this;
+			var postObj = {
+				method: "POST",
+				path: "http://localhost:9001/test",
+				entity: {
+					data: "xyz"
+				},
+				params: {},
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Access-Control-Allow-Headers": "X-Requested-With",
+					"crossDomain": true
+				}
+			};
+
+			client(postObj).then(function (data) {
+				console.log("data in then-----", data);
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var url = this.state.url;
+			return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement('div', { className: 'col-md-12' }, _react2.default.createElement('p', null, 'Welcome to Snipper'), _react2.default.createElement('p', null, 'Snip your url to a smalller one ;)')), _react2.default.createElement('div', { className: 'col-md-12' }, _react2.default.createElement('input', { ref: 'input', type: 'text' })), _react2.default.createElement('div', null, 'shortened url'), _react2.default.createElement('div', { className: 'col-md-12' }, _react2.default.createElement('input', { value: url, ref: 'output', type: 'text' })), _react2.default.createElement('button', { onClick: this.shortenURL.bind(this) }, 'Snip'), _react2.default.createElement('button', { onClick: this.test.bind(this) }, 'Test'));
+		}
+	}]);
+
+	return App;
+}(_react2.default.Component);
 
 exports.default = App;
 
-},{"react":213,"react-dom":31,"rest":215}],3:[function(require,module,exports){
+},{"react":213,"rest":215,"rest/interceptor/errorCode":220,"rest/interceptor/mime":221}],3:[function(require,module,exports){
 "use strict";
 
 require("../css/lib/bootstrap.min.css");
@@ -682,6 +753,16 @@ if ("undefined" == typeof jQuery) throw new Error("Bootstrap's JavaScript requir
 },{}],5:[function(require,module,exports){
 'use strict';
 
+var _createClass = function () {
+	function defineProperties(target, props) {
+		for (var i = 0; i < props.length; i++) {
+			var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+		}
+	}return function (Constructor, protoProps, staticProps) {
+		if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+	};
+}();
+
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
@@ -690,35 +771,65 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = require('react-dom');
+var _rest = require('rest');
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
+var _rest2 = _interopRequireDefault(_rest);
 
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-var NF = _react2.default.createClass({
-	displayName: 'NF',
-
-	componentDidMount: function componentDidMount() {
-		$.ajax({
-			url: 'http://localhost:9001/',
-			complete: function complete(res) {
-				console.log("res---------", res);
-			},
-			success: function success(xml) {}
-		});
-		window.location = "http://google.com";
-	},
-	render: function render() {
-		return _react2.default.createElement('div', null, 'not found');
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
 	}
-});
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && (typeof call === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var NF = function (_React$Component) {
+	_inherits(NF, _React$Component);
+
+	function NF() {
+		_classCallCheck(this, NF);
+
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(NF).apply(this, arguments));
+	}
+
+	_createClass(NF, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var loc = window.location;
+			var str = loc.hash.substring(2, loc.hash.indexOf('?'));
+			console.log("loc----", str);
+			(0, _rest2.default)('http://localhost:9001/getUrl/?code=' + str).then(function (data) {
+				console.log("data-----", data);
+				window.location = data.entity;
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement('div', { className: 'wait' }, 'Waiting...');
+		}
+	}]);
+
+	return NF;
+}(_react2.default.Component);
 
 exports.default = NF;
 
-},{"react":213,"react-dom":31}],6:[function(require,module,exports){
+},{"react":213,"rest":215}],6:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -24200,7 +24311,7 @@ module.exports = require('./lib/React');
 	// Boilerplate for AMD and Node
 ));
 
-},{"./util/mixin":219}],215:[function(require,module,exports){
+},{"./util/mixin":233}],215:[function(require,module,exports){
 /*
  * Copyright 2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -24595,7 +24706,1112 @@ module.exports = require('./lib/React');
 	// Boilerplate for AMD and Node
 ));
 
-},{"../UrlBuilder":214,"../client":216,"../util/normalizeHeaderName":220,"../util/responsePromise":221,"when":239}],219:[function(require,module,exports){
+},{"../UrlBuilder":214,"../client":216,"../util/normalizeHeaderName":234,"../util/responsePromise":235,"when":255}],219:[function(require,module,exports){
+/*
+ * Copyright 2012-2015 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var defaultClient, mixin, responsePromise, client, when;
+
+		defaultClient = require('./client/default');
+		mixin = require('./util/mixin');
+		responsePromise = require('./util/responsePromise');
+		client = require('./client');
+		when = require('when');
+
+		/**
+		 * Interceptors have the ability to intercept the request and/org response
+		 * objects.  They may augment, prune, transform or replace the
+		 * request/response as needed.  Clients may be composed by wrapping
+		 * together multiple interceptors.
+		 *
+		 * Configured interceptors are functional in nature.  Wrapping a client in
+		 * an interceptor will not affect the client, merely the data that flows in
+		 * and out of that client.  A common configuration can be created once and
+		 * shared; specialization can be created by further wrapping that client
+		 * with custom interceptors.
+		 *
+		 * @param {Client} [target] client to wrap
+		 * @param {Object} [config] configuration for the interceptor, properties will be specific to the interceptor implementation
+		 * @returns {Client} A client wrapped with the interceptor
+		 *
+		 * @class Interceptor
+		 */
+
+		function defaultInitHandler(config) {
+			return config;
+		}
+
+		function defaultRequestHandler(request /*, config, meta */) {
+			return request;
+		}
+
+		function defaultResponseHandler(response /*, config, meta */) {
+			return response;
+		}
+
+		function race(promisesOrValues) {
+			// this function is different than when.any as the first to reject also wins
+			return when.promise(function (resolve, reject) {
+				promisesOrValues.forEach(function (promiseOrValue) {
+					when(promiseOrValue, resolve, reject);
+				});
+			});
+		}
+
+		/**
+		 * Alternate return type for the request handler that allows for more complex interactions.
+		 *
+		 * @param properties.request the traditional request return object
+		 * @param {Promise} [properties.abort] promise that resolves if/when the request is aborted
+		 * @param {Client} [properties.client] override the defined client with an alternate client
+		 * @param [properties.response] response for the request, short circuit the request
+		 */
+		function ComplexRequest(properties) {
+			if (!(this instanceof ComplexRequest)) {
+				// in case users forget the 'new' don't mix into the interceptor
+				return new ComplexRequest(properties);
+			}
+			mixin(this, properties);
+		}
+
+		/**
+		 * Create a new interceptor for the provided handlers.
+		 *
+		 * @param {Function} [handlers.init] one time intialization, must return the config object
+		 * @param {Function} [handlers.request] request handler
+		 * @param {Function} [handlers.response] response handler regardless of error state
+		 * @param {Function} [handlers.success] response handler when the request is not in error
+		 * @param {Function} [handlers.error] response handler when the request is in error, may be used to 'unreject' an error state
+		 * @param {Function} [handlers.client] the client to use if otherwise not specified, defaults to platform default client
+		 *
+		 * @returns {Interceptor}
+		 */
+		function interceptor(handlers) {
+
+			var initHandler, requestHandler, successResponseHandler, errorResponseHandler;
+
+			handlers = handlers || {};
+
+			initHandler            = handlers.init    || defaultInitHandler;
+			requestHandler         = handlers.request || defaultRequestHandler;
+			successResponseHandler = handlers.success || handlers.response || defaultResponseHandler;
+			errorResponseHandler   = handlers.error   || function () {
+				// Propagate the rejection, with the result of the handler
+				return when((handlers.response || defaultResponseHandler).apply(this, arguments), when.reject, when.reject);
+			};
+
+			return function (target, config) {
+
+				if (typeof target === 'object') {
+					config = target;
+				}
+				if (typeof target !== 'function') {
+					target = handlers.client || defaultClient;
+				}
+
+				config = initHandler(config || {});
+
+				function interceptedClient(request) {
+					var context, meta;
+					context = {};
+					meta = { 'arguments': Array.prototype.slice.call(arguments), client: interceptedClient };
+					request = typeof request === 'string' ? { path: request } : request || {};
+					request.originator = request.originator || interceptedClient;
+					return responsePromise(
+						requestHandler.call(context, request, config, meta),
+						function (request) {
+							var response, abort, next;
+							next = target;
+							if (request instanceof ComplexRequest) {
+								// unpack request
+								abort = request.abort;
+								next = request.client || next;
+								response = request.response;
+								// normalize request, must be last
+								request = request.request;
+							}
+							response = response || when(request, function (request) {
+								return when(
+									next(request),
+									function (response) {
+										return successResponseHandler.call(context, response, config, meta);
+									},
+									function (response) {
+										return errorResponseHandler.call(context, response, config, meta);
+									}
+								);
+							});
+							return abort ? race([response, abort]) : response;
+						},
+						function (error) {
+							return when.reject({ request: request, error: error });
+						}
+					);
+				}
+
+				return client(interceptedClient, target);
+			};
+		}
+
+		interceptor.ComplexRequest = ComplexRequest;
+
+		return interceptor;
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"./client":216,"./client/default":217,"./util/mixin":233,"./util/responsePromise":235,"when":255}],220:[function(require,module,exports){
+/*
+ * Copyright 2012-2013 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var interceptor, when;
+
+		interceptor = require('../interceptor');
+		when = require('when');
+
+		/**
+		 * Rejects the response promise based on the status code.
+		 *
+		 * Codes greater than or equal to the provided value are rejected.  Default
+		 * value 400.
+		 *
+		 * @param {Client} [client] client to wrap
+		 * @param {number} [config.code=400] code to indicate a rejection
+		 *
+		 * @returns {Client}
+		 */
+		return interceptor({
+			init: function (config) {
+				config.code = config.code || 400;
+				return config;
+			},
+			response: function (response, config) {
+				if (response.status && response.status.code >= config.code) {
+					return when.reject(response);
+				}
+				return response;
+			}
+		});
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"../interceptor":219,"when":255}],221:[function(require,module,exports){
+/*
+ * Copyright 2012-2014 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var interceptor, mime, registry, noopConverter, when;
+
+		interceptor = require('../interceptor');
+		mime = require('../mime');
+		registry = require('../mime/registry');
+		when = require('when');
+
+		noopConverter = {
+			read: function (obj) { return obj; },
+			write: function (obj) { return obj; }
+		};
+
+		/**
+		 * MIME type support for request and response entities.  Entities are
+		 * (de)serialized using the converter for the MIME type.
+		 *
+		 * Request entities are converted using the desired converter and the
+		 * 'Accept' request header prefers this MIME.
+		 *
+		 * Response entities are converted based on the Content-Type response header.
+		 *
+		 * @param {Client} [client] client to wrap
+		 * @param {string} [config.mime='text/plain'] MIME type to encode the request
+		 *   entity
+		 * @param {string} [config.accept] Accept header for the request
+		 * @param {Client} [config.client=<request.originator>] client passed to the
+		 *   converter, defaults to the client originating the request
+		 * @param {Registry} [config.registry] MIME registry, defaults to the root
+		 *   registry
+		 * @param {boolean} [config.permissive] Allow an unkown request MIME type
+		 *
+		 * @returns {Client}
+		 */
+		return interceptor({
+			init: function (config) {
+				config.registry = config.registry || registry;
+				return config;
+			},
+			request: function (request, config) {
+				var type, headers;
+
+				headers = request.headers || (request.headers = {});
+				type = mime.parse(headers['Content-Type'] = headers['Content-Type'] || config.mime || 'text/plain');
+				headers.Accept = headers.Accept || config.accept || type.raw + ', application/json;q=0.8, text/plain;q=0.5, */*;q=0.2';
+
+				if (!('entity' in request)) {
+					return request;
+				}
+
+				return config.registry.lookup(type).otherwise(function () {
+					// failed to resolve converter
+					if (config.permissive) {
+						return noopConverter;
+					}
+					throw 'mime-unknown';
+				}).then(function (converter) {
+					var client = config.client || request.originator;
+
+					return when.attempt(converter.write, request.entity, { client: client, request: request, mime: type, registry: config.registry })
+						.otherwise(function() {
+							throw 'mime-serialization';
+						})
+						.then(function(entity) {
+							request.entity = entity;
+							return request;
+						});
+				});
+			},
+			response: function (response, config) {
+				if (!(response.headers && response.headers['Content-Type'] && response.entity)) {
+					return response;
+				}
+
+				var type = mime.parse(response.headers['Content-Type']);
+
+				return config.registry.lookup(type).otherwise(function () { return noopConverter; }).then(function (converter) {
+					var client = config.client || response.request && response.request.originator;
+
+					return when.attempt(converter.read, response.entity, { client: client, response: response, mime: type, registry: config.registry })
+						.otherwise(function (e) {
+							response.error = 'mime-deserialization';
+							response.cause = e;
+							throw response;
+						})
+						.then(function (entity) {
+							response.entity = entity;
+							return response;
+						});
+				});
+			}
+		});
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"../interceptor":219,"../mime":224,"../mime/registry":225,"when":255}],222:[function(require,module,exports){
+/*
+ * Copyright 2012-2013 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var interceptor, UrlBuilder;
+
+		interceptor = require('../interceptor');
+		UrlBuilder = require('../UrlBuilder');
+
+		function startsWith(str, prefix) {
+			return str.indexOf(prefix) === 0;
+		}
+
+		function endsWith(str, suffix) {
+			return str.lastIndexOf(suffix) + suffix.length === str.length;
+		}
+
+		/**
+		 * Prefixes the request path with a common value.
+		 *
+		 * @param {Client} [client] client to wrap
+		 * @param {number} [config.prefix] path prefix
+		 *
+		 * @returns {Client}
+		 */
+		return interceptor({
+			request: function (request, config) {
+				var path;
+
+				if (config.prefix && !(new UrlBuilder(request.path).isFullyQualified())) {
+					path = config.prefix;
+					if (request.path) {
+						if (!endsWith(path, '/') && !startsWith(request.path, '/')) {
+							// add missing '/' between path sections
+							path += '/';
+						}
+						path += request.path;
+					}
+					request.path = path;
+				}
+
+				return request;
+			}
+		});
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"../UrlBuilder":214,"../interceptor":219}],223:[function(require,module,exports){
+/*
+ * Copyright 2015 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var interceptor, uriTemplate, mixin;
+
+		interceptor = require('../interceptor');
+		uriTemplate = require('../util/uriTemplate');
+		mixin = require('../util/mixin');
+
+		/**
+		 * Applies request params to the path as a URI Template
+		 *
+		 * Params are removed from the request object, as they have been consumed.
+		 *
+		 * @param {Client} [client] client to wrap
+		 * @param {Object} [config.params] default param values
+		 * @param {string} [config.template] default template
+		 *
+		 * @returns {Client}
+		 */
+		return interceptor({
+			init: function (config) {
+				config.params = config.params || {};
+				config.template = config.template || '';
+				return config;
+			},
+			request: function (request, config) {
+				var template, params;
+
+				template = request.path || config.template;
+				params = mixin({}, request.params, config.params);
+
+				request.path = uriTemplate.expand(template, params);
+				delete request.params;
+
+				return request;
+			}
+		});
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"../interceptor":219,"../util/mixin":233,"../util/uriTemplate":237}],224:[function(require,module,exports){
+/*
+* Copyright 2014 the original author or authors
+* @license MIT, see LICENSE.txt for details
+*
+* @author Scott Andrews
+*/
+
+(function (define) {
+	'use strict';
+
+	var undef;
+
+	define(function (/* require */) {
+
+		/**
+		 * Parse a MIME type into it's constituent parts
+		 *
+		 * @param {string} mime MIME type to parse
+		 * @return {{
+		 *   {string} raw the original MIME type
+		 *   {string} type the type and subtype
+		 *   {string} [suffix] mime suffix, including the plus, if any
+		 *   {Object} params key/value pair of attributes
+		 * }}
+		 */
+		function parse(mime) {
+			var params, type;
+
+			params = mime.split(';');
+			type = params[0].trim().split('+');
+
+			return {
+				raw: mime,
+				type: type[0],
+				suffix: type[1] ? '+' + type[1] : '',
+				params: params.slice(1).reduce(function (params, pair) {
+					pair = pair.split('=');
+					params[pair[0].trim()] = pair[1] ? pair[1].trim() : undef;
+					return params;
+				}, {})
+			};
+		}
+
+		return {
+			parse: parse
+		};
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{}],225:[function(require,module,exports){
+/*
+ * Copyright 2012-2014 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var mime, when, registry;
+
+		mime = require('../mime');
+		when = require('when');
+
+		function Registry(mimes) {
+
+			/**
+			 * Lookup the converter for a MIME type
+			 *
+			 * @param {string} type the MIME type
+			 * @return a promise for the converter
+			 */
+			this.lookup = function lookup(type) {
+				var parsed;
+
+				parsed = typeof type === 'string' ? mime.parse(type) : type;
+
+				if (mimes[parsed.raw]) {
+					return mimes[parsed.raw];
+				}
+				if (mimes[parsed.type + parsed.suffix]) {
+					return mimes[parsed.type + parsed.suffix];
+				}
+				if (mimes[parsed.type]) {
+					return mimes[parsed.type];
+				}
+				if (mimes[parsed.suffix]) {
+					return mimes[parsed.suffix];
+				}
+
+				return when.reject(new Error('Unable to locate converter for mime "' + parsed.raw + '"'));
+			};
+
+			/**
+			 * Create a late dispatched proxy to the target converter.
+			 *
+			 * Common when a converter is registered under multiple names and
+			 * should be kept in sync if updated.
+			 *
+			 * @param {string} type mime converter to dispatch to
+			 * @returns converter whose read/write methods target the desired mime converter
+			 */
+			this.delegate = function delegate(type) {
+				return {
+					read: function () {
+						var args = arguments;
+						return this.lookup(type).then(function (converter) {
+							return converter.read.apply(this, args);
+						}.bind(this));
+					}.bind(this),
+					write: function () {
+						var args = arguments;
+						return this.lookup(type).then(function (converter) {
+							return converter.write.apply(this, args);
+						}.bind(this));
+					}.bind(this)
+				};
+			};
+
+			/**
+			 * Register a custom converter for a MIME type
+			 *
+			 * @param {string} type the MIME type
+			 * @param converter the converter for the MIME type
+			 * @return a promise for the converter
+			 */
+			this.register = function register(type, converter) {
+				mimes[type] = when(converter);
+				return mimes[type];
+			};
+
+			/**
+			 * Create a child registry whoes registered converters remain local, while
+			 * able to lookup converters from its parent.
+			 *
+			 * @returns child MIME registry
+			 */
+			this.child = function child() {
+				return new Registry(Object.create(mimes));
+			};
+
+		}
+
+		registry = new Registry({});
+
+		// include provided serializers
+		registry.register('application/hal', require('./type/application/hal'));
+		registry.register('application/json', require('./type/application/json'));
+		registry.register('application/x-www-form-urlencoded', require('./type/application/x-www-form-urlencoded'));
+		registry.register('multipart/form-data', require('./type/multipart/form-data'));
+		registry.register('text/plain', require('./type/text/plain'));
+
+		registry.register('+json', registry.delegate('application/json'));
+
+		return registry;
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"../mime":224,"./type/application/hal":226,"./type/application/json":227,"./type/application/x-www-form-urlencoded":228,"./type/multipart/form-data":229,"./type/text/plain":230,"when":255}],226:[function(require,module,exports){
+/*
+ * Copyright 2013-2015 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var pathPrefix, template, find, lazyPromise, responsePromise, when;
+
+		pathPrefix = require('../../../interceptor/pathPrefix');
+		template = require('../../../interceptor/template');
+		find = require('../../../util/find');
+		lazyPromise = require('../../../util/lazyPromise');
+		responsePromise = require('../../../util/responsePromise');
+		when = require('when');
+
+		function defineProperty(obj, name, value) {
+			Object.defineProperty(obj, name, {
+				value: value,
+				configurable: true,
+				enumerable: false,
+				writeable: true
+			});
+		}
+
+		/**
+		 * Hypertext Application Language serializer
+		 *
+		 * Implemented to https://tools.ietf.org/html/draft-kelly-json-hal-06
+		 *
+		 * As the spec is still a draft, this implementation will be updated as the
+		 * spec evolves
+		 *
+		 * Objects are read as HAL indexing links and embedded objects on to the
+		 * resource. Objects are written as plain JSON.
+		 *
+		 * Embedded relationships are indexed onto the resource by the relationship
+		 * as a promise for the related resource.
+		 *
+		 * Links are indexed onto the resource as a lazy promise that will GET the
+		 * resource when a handler is first registered on the promise.
+		 *
+		 * A `requestFor` method is added to the entity to make a request for the
+		 * relationship.
+		 *
+		 * A `clientFor` method is added to the entity to get a full Client for a
+		 * relationship.
+		 *
+		 * The `_links` and `_embedded` properties on the resource are made
+		 * non-enumerable.
+		 */
+		return {
+
+			read: function (str, opts) {
+				var client, console;
+
+				opts = opts || {};
+				client = opts.client;
+				console = opts.console || console;
+
+				function deprecationWarning(relationship, deprecation) {
+					if (deprecation && console && console.warn || console.log) {
+						(console.warn || console.log).call(console, 'Relationship \'' + relationship + '\' is deprecated, see ' + deprecation);
+					}
+				}
+
+				return opts.registry.lookup(opts.mime.suffix).then(function (converter) {
+					return when(converter.read(str, opts)).then(function (root) {
+
+						find.findProperties(root, '_embedded', function (embedded, resource, name) {
+							Object.keys(embedded).forEach(function (relationship) {
+								if (relationship in resource) { return; }
+								var related = responsePromise({
+									entity: embedded[relationship]
+								});
+								defineProperty(resource, relationship, related);
+							});
+							defineProperty(resource, name, embedded);
+						});
+						find.findProperties(root, '_links', function (links, resource, name) {
+							Object.keys(links).forEach(function (relationship) {
+								var link = links[relationship];
+								if (relationship in resource) { return; }
+								defineProperty(resource, relationship, responsePromise.make(lazyPromise(function () {
+									if (link.deprecation) { deprecationWarning(relationship, link.deprecation); }
+									if (link.templated === true) {
+										return template(client)({ path: link.href });
+									}
+									return client({ path: link.href });
+								})));
+							});
+							defineProperty(resource, name, links);
+							defineProperty(resource, 'clientFor', function (relationship, clientOverride) {
+								var link = links[relationship];
+								if (!link) {
+									throw new Error('Unknown relationship: ' + relationship);
+								}
+								if (link.deprecation) { deprecationWarning(relationship, link.deprecation); }
+								if (link.templated === true) {
+									return template(
+										clientOverride || client,
+										{ template: link.href }
+									);
+								}
+								return pathPrefix(
+									clientOverride || client,
+									{ prefix: link.href }
+								);
+							});
+							defineProperty(resource, 'requestFor', function (relationship, request, clientOverride) {
+								var client = this.clientFor(relationship, clientOverride);
+								return client(request);
+							});
+						});
+
+						return root;
+					});
+				});
+
+			},
+
+			write: function (obj, opts) {
+				return opts.registry.lookup(opts.mime.suffix).then(function (converter) {
+					return converter.write(obj, opts);
+				});
+			}
+
+		};
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"../../../interceptor/pathPrefix":222,"../../../interceptor/template":223,"../../../util/find":231,"../../../util/lazyPromise":232,"../../../util/responsePromise":235,"when":255}],227:[function(require,module,exports){
+/*
+ * Copyright 2012-2015 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (/* require */) {
+
+		/**
+		 * Create a new JSON converter with custom reviver/replacer.
+		 *
+		 * The extended converter must be published to a MIME registry in order
+		 * to be used. The existing converter will not be modified.
+		 *
+		 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON
+		 *
+		 * @param {function} [reviver=undefined] custom JSON.parse reviver
+		 * @param {function|Array} [replacer=undefined] custom JSON.stringify replacer
+		 */
+		function createConverter(reviver, replacer) {
+			return {
+
+				read: function (str) {
+					return JSON.parse(str, reviver);
+				},
+
+				write: function (obj) {
+					return JSON.stringify(obj, replacer);
+				},
+
+				extend: createConverter
+
+			};
+		}
+
+		return createConverter();
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{}],228:[function(require,module,exports){
+/*
+ * Copyright 2012 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (/* require */) {
+
+		var encodedSpaceRE, urlEncodedSpaceRE;
+
+		encodedSpaceRE = /%20/g;
+		urlEncodedSpaceRE = /\+/g;
+
+		function urlEncode(str) {
+			str = encodeURIComponent(str);
+			// spec says space should be encoded as '+'
+			return str.replace(encodedSpaceRE, '+');
+		}
+
+		function urlDecode(str) {
+			// spec says space should be encoded as '+'
+			str = str.replace(urlEncodedSpaceRE, ' ');
+			return decodeURIComponent(str);
+		}
+
+		function append(str, name, value) {
+			if (Array.isArray(value)) {
+				value.forEach(function (value) {
+					str = append(str, name, value);
+				});
+			}
+			else {
+				if (str.length > 0) {
+					str += '&';
+				}
+				str += urlEncode(name);
+				if (value !== undefined && value !== null) {
+					str += '=' + urlEncode(value);
+				}
+			}
+			return str;
+		}
+
+		return {
+
+			read: function (str) {
+				var obj = {};
+				str.split('&').forEach(function (entry) {
+					var pair, name, value;
+					pair = entry.split('=');
+					name = urlDecode(pair[0]);
+					if (pair.length === 2) {
+						value = urlDecode(pair[1]);
+					}
+					else {
+						value = null;
+					}
+					if (name in obj) {
+						if (!Array.isArray(obj[name])) {
+							// convert to an array, perserving currnent value
+							obj[name] = [obj[name]];
+						}
+						obj[name].push(value);
+					}
+					else {
+						obj[name] = value;
+					}
+				});
+				return obj;
+			},
+
+			write: function (obj) {
+				var str = '';
+				Object.keys(obj).forEach(function (name) {
+					str = append(str, name, obj[name]);
+				});
+				return str;
+			}
+
+		};
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{}],229:[function(require,module,exports){
+/*
+ * Copyright 2014 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Michael Jackson
+ */
+
+/* global FormData, File, Blob */
+
+(function (define) {
+	'use strict';
+
+	define(function (/* require */) {
+
+		function isFormElement(object) {
+			return object &&
+				object.nodeType === 1 && // Node.ELEMENT_NODE
+				object.tagName === 'FORM';
+		}
+
+		function createFormDataFromObject(object) {
+			var formData = new FormData();
+
+			var value;
+			for (var property in object) {
+				if (object.hasOwnProperty(property)) {
+					value = object[property];
+
+					if (value instanceof File) {
+						formData.append(property, value, value.name);
+					} else if (value instanceof Blob) {
+						formData.append(property, value);
+					} else {
+						formData.append(property, String(value));
+					}
+				}
+			}
+
+			return formData;
+		}
+
+		return {
+
+			write: function (object) {
+				if (typeof FormData === 'undefined') {
+					throw new Error('The multipart/form-data mime serializer requires FormData support');
+				}
+
+				// Support FormData directly.
+				if (object instanceof FormData) {
+					return object;
+				}
+
+				// Support <form> elements.
+				if (isFormElement(object)) {
+					return new FormData(object);
+				}
+
+				// Support plain objects, may contain File/Blob as value.
+				if (typeof object === 'object' && object !== null) {
+					return createFormDataFromObject(object);
+				}
+
+				throw new Error('Unable to create FormData from object ' + object);
+			}
+
+		};
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{}],230:[function(require,module,exports){
+/*
+ * Copyright 2012 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (/* require */) {
+
+		return {
+
+			read: function (str) {
+				return str;
+			},
+
+			write: function (obj) {
+				return obj.toString();
+			}
+
+		};
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{}],231:[function(require,module,exports){
+/*
+ * Copyright 2013 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (/* require */) {
+
+		return {
+
+			/**
+			 * Find objects within a graph the contain a property of a certain name.
+			 *
+			 * NOTE: this method will not discover object graph cycles.
+			 *
+			 * @param {*} obj object to search on
+			 * @param {string} prop name of the property to search for
+			 * @param {Function} callback function to receive the found properties and their parent
+			 */
+			findProperties: function findProperties(obj, prop, callback) {
+				if (typeof obj !== 'object' || obj === null) { return; }
+				if (prop in obj) {
+					callback(obj[prop], obj, prop);
+				}
+				Object.keys(obj).forEach(function (key) {
+					findProperties(obj[key], prop, callback);
+				});
+			}
+
+		};
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{}],232:[function(require,module,exports){
+/*
+ * Copyright 2013 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (require) {
+
+		var when;
+
+		when = require('when');
+
+		/**
+		 * Create a promise whose work is started only when a handler is registered.
+		 *
+		 * The work function will be invoked at most once. Thrown values will result
+		 * in promise rejection.
+		 *
+		 * @param {Function} work function whose ouput is used to resolve the
+		 *   returned promise.
+		 * @returns {Promise} a lazy promise
+		 */
+		function lazyPromise(work) {
+			var defer, started, resolver, promise, then;
+
+			defer = when.defer();
+			started = false;
+
+			resolver = defer.resolver;
+			promise = defer.promise;
+			then = promise.then;
+
+			promise.then = function () {
+				if (!started) {
+					started = true;
+					when.attempt(work).then(resolver.resolve, resolver.reject);
+				}
+				return then.apply(promise, arguments);
+			};
+
+			return promise;
+		}
+
+		return lazyPromise;
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"when":255}],233:[function(require,module,exports){
 /*
  * Copyright 2012-2013 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -24645,7 +25861,7 @@ module.exports = require('./lib/React');
 	// Boilerplate for AMD and Node
 ));
 
-},{}],220:[function(require,module,exports){
+},{}],234:[function(require,module,exports){
 /*
  * Copyright 2012 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -24685,7 +25901,7 @@ module.exports = require('./lib/React');
 	// Boilerplate for AMD and Node
 ));
 
-},{}],221:[function(require,module,exports){
+},{}],235:[function(require,module,exports){
 /*
  * Copyright 2014-2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -24827,7 +26043,361 @@ module.exports = require('./lib/React');
 	// Boilerplate for AMD and Node
 ));
 
-},{"./normalizeHeaderName":220,"when":239}],222:[function(require,module,exports){
+},{"./normalizeHeaderName":234,"when":255}],236:[function(require,module,exports){
+/*
+ * Copyright 2015 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	define(function (/* require */) {
+
+		var charMap;
+
+		charMap = (function () {
+			var strings = {
+				alpha: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+				digit: '0123456789'
+			};
+
+			strings.genDelims = ':/?#[]@';
+			strings.subDelims = '!$&\'()*+,;=';
+			strings.reserved = strings.genDelims + strings.subDelims;
+			strings.unreserved = strings.alpha + strings.digit + '-._~';
+			strings.url = strings.reserved + strings.unreserved;
+			strings.scheme = strings.alpha + strings.digit + '+-.';
+			strings.userinfo = strings.unreserved + strings.subDelims + ':';
+			strings.host = strings.unreserved + strings.subDelims;
+			strings.port = strings.digit;
+			strings.pchar = strings.unreserved + strings.subDelims + ':@';
+			strings.segment = strings.pchar;
+			strings.path = strings.segment + '/';
+			strings.query = strings.pchar + '/?';
+			strings.fragment = strings.pchar + '/?';
+
+			return Object.keys(strings).reduce(function (charMap, set) {
+				charMap[set] = strings[set].split('').reduce(function (chars, char) {
+					chars[char] = true;
+					return chars;
+				}, {});
+				return charMap;
+			}, {});
+		}());
+
+		function encode(str, allowed) {
+			if (typeof str !== 'string') {
+				throw new Error('String required for URL encoding');
+			}
+			return str.split('').map(function (char) {
+				if (allowed.hasOwnProperty(char)) {
+					return char;
+				}
+				var code = char.charCodeAt(0);
+				if (code <= 127) {
+					return '%' + code.toString(16).toUpperCase();
+				}
+				else {
+					return encodeURIComponent(char).toUpperCase();
+				}
+			}).join('');
+		}
+
+		function makeEncoder(allowed) {
+			allowed = allowed || charMap.unreserved;
+			return function (str) {
+				return encode(str, allowed);
+			};
+		}
+
+		function decode(str) {
+			return decodeURIComponent(str);
+		}
+
+		return {
+
+			/*
+			 * Decode URL encoded strings
+			 *
+			 * @param {string} URL encoded string
+			 * @returns {string} URL decoded string
+			 */
+			decode: decode,
+
+			/*
+			 * URL encode a string
+			 *
+			 * All but alpha-numerics and a very limited set of punctuation - . _ ~ are
+			 * encoded.
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encode: makeEncoder(),
+
+			/*
+			* URL encode a URL
+			*
+			* All character permitted anywhere in a URL are left unencoded even
+			* if that character is not permitted in that portion of a URL.
+			*
+			* Note: This method is typically not what you want.
+			*
+			* @param {string} string to encode
+			* @returns {string} URL encoded string
+			*/
+			encodeURL: makeEncoder(charMap.url),
+
+			/*
+			 * URL encode the scheme portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodeScheme: makeEncoder(charMap.scheme),
+
+			/*
+			 * URL encode the user info portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodeUserInfo: makeEncoder(charMap.userinfo),
+
+			/*
+			 * URL encode the host portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodeHost: makeEncoder(charMap.host),
+
+			/*
+			 * URL encode the port portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodePort: makeEncoder(charMap.port),
+
+			/*
+			 * URL encode a path segment portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodePathSegment: makeEncoder(charMap.segment),
+
+			/*
+			 * URL encode the path portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodePath: makeEncoder(charMap.path),
+
+			/*
+			 * URL encode the query portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodeQuery: makeEncoder(charMap.query),
+
+			/*
+			 * URL encode the fragment portion of a URL
+			 *
+			 * @param {string} string to encode
+			 * @returns {string} URL encoded string
+			 */
+			encodeFragment: makeEncoder(charMap.fragment)
+
+		};
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{}],237:[function(require,module,exports){
+/*
+ * Copyright 2015 the original author or authors
+ * @license MIT, see LICENSE.txt for details
+ *
+ * @author Scott Andrews
+ */
+
+(function (define) {
+	'use strict';
+
+	var undef;
+
+	define(function (require) {
+
+		var uriEncoder, operations, prefixRE;
+
+		uriEncoder = require('./uriEncoder');
+
+		prefixRE = /^([^:]*):([0-9]+)$/;
+		operations = {
+			'':  { first: '',  separator: ',', named: false, empty: '',  encoder: uriEncoder.encode },
+			'+': { first: '',  separator: ',', named: false, empty: '',  encoder: uriEncoder.encodeURL },
+			'#': { first: '#', separator: ',', named: false, empty: '',  encoder: uriEncoder.encodeURL },
+			'.': { first: '.', separator: '.', named: false, empty: '',  encoder: uriEncoder.encode },
+			'/': { first: '/', separator: '/', named: false, empty: '',  encoder: uriEncoder.encode },
+			';': { first: ';', separator: ';', named: true,  empty: '',  encoder: uriEncoder.encode },
+			'?': { first: '?', separator: '&', named: true,  empty: '=', encoder: uriEncoder.encode },
+			'&': { first: '&', separator: '&', named: true,  empty: '=', encoder: uriEncoder.encode },
+			'=': { reserved: true },
+			',': { reserved: true },
+			'!': { reserved: true },
+			'@': { reserved: true },
+			'|': { reserved: true }
+		};
+
+		function apply(operation, expression, params) {
+			/*jshint maxcomplexity:11 */
+			return expression.split(',').reduce(function (result, variable) {
+				var opts, value;
+
+				opts = {};
+				if (variable.slice(-1) === '*') {
+					variable = variable.slice(0, -1);
+					opts.explode = true;
+				}
+				if (prefixRE.test(variable)) {
+					var prefix = prefixRE.exec(variable);
+					variable = prefix[1];
+					opts.maxLength = parseInt(prefix[2]);
+				}
+
+				variable = uriEncoder.decode(variable);
+				value = params[variable];
+
+				if (value === undef || value === null) {
+					return result;
+				}
+				if (typeof value === 'string') {
+					if (opts.maxLength) {
+						value = value.slice(0, opts.maxLength);
+					}
+					result += result.length ? operation.separator : operation.first;
+					if (operation.named) {
+						result += operation.encoder(variable);
+						result += value.length ? '=' : operation.empty;
+					}
+					result += operation.encoder(value);
+				}
+				else if (Array.isArray(value)) {
+					result += value.reduce(function (result, value) {
+						if (result.length) {
+							result += opts.explode ? operation.separator : ',';
+							if (operation.named && opts.explode) {
+								result += operation.encoder(variable);
+								result += value.length ? '=' : operation.empty;
+							}
+						}
+						else {
+							result += operation.first;
+							if (operation.named) {
+								result += operation.encoder(variable);
+								result += value.length ? '=' : operation.empty;
+							}
+						}
+						result += operation.encoder(value);
+						return result;
+					}, '');
+				}
+				else {
+					result += Object.keys(value).reduce(function (result, name) {
+						if (result.length) {
+							result += opts.explode ? operation.separator : ',';
+						}
+						else {
+							result += operation.first;
+							if (operation.named && !opts.explode) {
+								result += operation.encoder(variable);
+								result += value[name].length ? '=' : operation.empty;
+							}
+						}
+						result += operation.encoder(name);
+						result += opts.explode ? '=' : ',';
+						result += operation.encoder(value[name]);
+						return result;
+					}, '');
+				}
+
+				return result;
+			}, '');
+		}
+
+		function expandExpression(expression, params) {
+			var operation;
+
+			operation = operations[expression.slice(0,1)];
+			if (operation) {
+				expression = expression.slice(1);
+			}
+			else {
+				operation = operations[''];
+			}
+
+			if (operation.reserved) {
+				throw new Error('Reserved expression operations are not supported');
+			}
+
+			return apply(operation, expression, params);
+		}
+
+		function expandTemplate(template, params) {
+			var start, end, uri;
+
+			uri = '';
+			end = 0;
+			while (true) {
+				start = template.indexOf('{', end);
+				if (start === -1) {
+					// no more expressions
+					uri += template.slice(end);
+					break;
+				}
+				uri += template.slice(end, start);
+				end = template.indexOf('}', start) + 1;
+				uri += expandExpression(template.slice(start + 1, end - 1), params);
+			}
+
+			return uri;
+		}
+
+		return {
+
+			/**
+			 * Expand a URI Template with parameters to form a URI.
+			 *
+			 * Full implementation (level 4) of rfc6570.
+			 * @see https://tools.ietf.org/html/rfc6570
+			 *
+			 * @param {string} template URI template
+			 * @param {Object} [params] params to apply to the template durring expantion
+			 * @returns {string} expanded URI
+			 */
+			expand: expandTemplate
+
+		};
+
+	});
+
+}(
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
+	// Boilerplate for AMD and Node
+));
+
+},{"./uriEncoder":236}],238:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24846,7 +26416,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./Scheduler":223,"./env":235,"./makePromise":237}],223:[function(require,module,exports){
+},{"./Scheduler":239,"./env":251,"./makePromise":253}],239:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24928,7 +26498,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],224:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24956,7 +26526,7 @@ define(function() {
 	return TimeoutError;
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
-},{}],225:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25013,7 +26583,7 @@ define(function() {
 
 
 
-},{}],226:[function(require,module,exports){
+},{}],242:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25304,7 +26874,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../apply":225,"../state":238}],227:[function(require,module,exports){
+},{"../apply":241,"../state":254}],243:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25466,7 +27036,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],228:[function(require,module,exports){
+},{}],244:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25495,7 +27065,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],229:[function(require,module,exports){
+},{}],245:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25517,7 +27087,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../state":238}],230:[function(require,module,exports){
+},{"../state":254}],246:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25584,7 +27154,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],231:[function(require,module,exports){
+},{}],247:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25610,7 +27180,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],232:[function(require,module,exports){
+},{}],248:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25690,7 +27260,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../TimeoutError":224,"../env":235}],233:[function(require,module,exports){
+},{"../TimeoutError":240,"../env":251}],249:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25778,7 +27348,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../env":235,"../format":236}],234:[function(require,module,exports){
+},{"../env":251,"../format":252}],250:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25818,7 +27388,7 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 
-},{}],235:[function(require,module,exports){
+},{}],251:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
@@ -25895,7 +27465,7 @@ define(function(require) {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
 }).call(this,require('_process'))
-},{"_process":6}],236:[function(require,module,exports){
+},{"_process":6}],252:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25953,7 +27523,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],237:[function(require,module,exports){
+},{}],253:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
@@ -26884,7 +28454,7 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 }).call(this,require('_process'))
-},{"_process":6}],238:[function(require,module,exports){
+},{"_process":6}],254:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -26921,7 +28491,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],239:[function(require,module,exports){
+},{}],255:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 
 /**
@@ -27151,4 +28721,4 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./lib/Promise":222,"./lib/TimeoutError":224,"./lib/apply":225,"./lib/decorators/array":226,"./lib/decorators/flow":227,"./lib/decorators/fold":228,"./lib/decorators/inspect":229,"./lib/decorators/iterate":230,"./lib/decorators/progress":231,"./lib/decorators/timed":232,"./lib/decorators/unhandledRejection":233,"./lib/decorators/with":234}]},{},[3]);
+},{"./lib/Promise":238,"./lib/TimeoutError":240,"./lib/apply":241,"./lib/decorators/array":242,"./lib/decorators/flow":243,"./lib/decorators/fold":244,"./lib/decorators/inspect":245,"./lib/decorators/iterate":246,"./lib/decorators/progress":247,"./lib/decorators/timed":248,"./lib/decorators/unhandledRejection":249,"./lib/decorators/with":250}]},{},[3]);

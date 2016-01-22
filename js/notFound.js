@@ -1,23 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import rest from 'rest';
 
-var NF =  React.createClass({
-	componentDidMount: function() {
-		$.ajax({
-	    url: 'http://localhost:9001/',
-	    complete : function(res){
-	      console.log("res---------",res)
-	    },
-	    success: function(xml){
-	    }
-		});
-		window.location = "http://google.com";
-	},
+class NF extends React.Component {
+	componentDidMount() {
+		var loc = window.location;
+		var str = loc.hash.substring(2,loc.hash.indexOf('?'))
+		console.log("loc----",str)
+		rest('http://localhost:9001/getUrl/?code='+str)
+		.then(function(data){
+			console.log("data-----",data);
+			window.location = data.entity
+		})
+	}
+
 	render() {
 		return (
-				<div>not found</div>
+				<div className="wait">Waiting...</div>
 		)
 	}
-})
+}
 
 export default NF;
