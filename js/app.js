@@ -19,7 +19,7 @@ class App extends React.Component {
 
 	shortenURL() {
 		var self     = this
-		var regexObj =  /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+		var regexObj =  /(((http|https|ftp|ftps):\/\/)|www\.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#!]*[\w\-\@?^=%&amp;\/~\+#])?/;
 		var url      = this.refs.input.value
 
 		if(!regexObj.test(url)){
@@ -61,18 +61,24 @@ class App extends React.Component {
 		var url = this.state.url;
 		return (
 			<div className="container">
-				<div className="col-md-12">	
-					<p>Welcome to Snipper</p>
-					<p>Snip your url to a smalller one ;)</p>
+				<div className="about col-md-12">	
+					<div className="jumbotron header">	
+					<h1>Welcome to Snipper</h1>
+					</div>
 				</div>
-				<div className="col-md-12">	
+				<div className="col-md-12 main">	
+					<p>Snip your url to a smalller one!</p>
 					<input ref="input" type="text" />
+					<div className="button">
+						<button className="btn btn-cus" onClick={this.shortenURL.bind(this)}>Snip</button>
+					</div>
+					<div className="output-wrap">
+						<h2>Shortened URL</h2>
+						<div className="output">
+							<a href={url} type="text">{url}</a>
+						</div>
+					</div>
 				</div>
-				<div>shortened url</div>
-				<div className="col-md-12">	
-					<input value={url} ref="output" type="text" />
-				</div>
-				<button onClick={this.shortenURL.bind(this)}>Snip</button>
 				<button onClick={this.test.bind(this)}>Test</button>
 			</div>
 		)

@@ -31,6 +31,7 @@
     "gulp"                : "*",
     "watchify"            : "*",
     "gulp-less"           : "*",
+    "gulp-watch-less"           : "*",
     "gulp-add-src"        : "^0.2.0",
     "gulp-buffer"         : "0.0.2",
     "gulp-clean"          : "^0.3.1",

@@ -1,0 +1,48 @@
+.about {
+  font-size: 20px;
+  font-color: red;
+  font-family: monospace;
+}
+.header {
+  font-family: monospace;
+  text-align: center;
+}
+.main p {
+  text-align: center;
+  font-size: 30px;
+  padding: 13px;
+}
+.main input {
+  line-height: 2;
+  font-size: 20px;
+  width: 100%;
+  border: 1px solid #CCC;
+  margin: 25px 0 16px 0;
+}
+.main .button {
+  text-align: center;
+}
+.main .button .btn-cus {
+  width: 11%;
+  color: #fff;
+  background-color: #222292;
+  border-color: #222292;
+  font-size: 20px;
+}
+.output-wrap {
+  box-shadow: -1px -1px 12px -1px #58849A;
+  padding: 5px;
+  margin-top: 64px;
+  background-color: rgba(217, 237, 247, 0.81);
+  text-align: center;
+}
+.output-wrap h2 {
+  margin-top: 0;
+  font-family: monospace;
+  color: #222292;
+  padding: 5px;
+}
+.output-wrap a {
+  padding: 10px;
+  font-size: 20px;
+}

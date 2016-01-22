@@ -51,6 +51,7 @@ app.get('/test', function(req, res){
 
 app.get('/getUrl/', function (req, res) {
 	Model.findOne(req.query, function(err, data){
+		//res.redirect(302,data.url)
     res.send(data.url)
   });
 })

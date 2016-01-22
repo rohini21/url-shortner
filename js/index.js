@@ -1,6 +1,7 @@
 import "../css/lib/bootstrap.min.css";
 import "./lib/bootstrap/bootstrap.min.js";
 
+import "../css/style.css";
 
 import React from 'react';
 import { render } from 'react-dom';

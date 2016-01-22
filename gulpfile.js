@@ -4,36 +4,46 @@ var source      = require('vinyl-source-stream');
 var buffer      = require('vinyl-buffer');
 var plugins     = require('gulp-load-plugins')();
 var runSequence = require('run-sequence');
+var watchLess   = require('gulp-watch-less');
+var less        = require('gulp-less');
+
+ 
+gulp.task('less', function () {
+  return gulp.src('less/style.less')
+    .pipe(watchLess('less/style.less'))
+    .pipe(less())
+    .pipe(gulp.dest('css'));
+});
 
 // Build LESS to CSS
 /*gulp.task('build-css', function() {
   return gulp.src('./website/less/*.less')
-      .pipe(plugins.plumber())
-      .pipe(plugins.less())
-      .on('error', function (err) {
-          gutil.log(err);
-          this.emit('end');
-      })
-      .pipe(plugins.autoprefixer(
-          {
-            browsers: [
-              '> 5%',
-              'last 2 versions',
-              'firefox >= 4',
-              'safari 7',
-              'safari 8',
-              'IE 8',
-              'IE 9',
-              'IE 10',
-              'IE 11'
-            ],
-            cascade: false
-          }
-      ))
-      .pipe(plugins.cssmin())
-      .pipe(gulp.dest('./website/css')).on('error', gutil.log);
-});*/
-
+    .pipe(plugins.plumber())
+    .pipe(plugins.less())
+    .on('error', function (err) {
+        gutil.log(err);
+        this.emit('end');
+    })
+    .pipe(plugins.autoprefixer(
+        {
+          browsers: [
+            '> 5%',
+            'last 2 versions',
+            'firefox >= 4',
+            'safari 7',
+            'safari 8',
+            'IE 8',
+            'IE 9',
+            'IE 10',
+            'IE 11'
+          ],
+          cascade: false
+        }
+    ))
+    .pipe(plugins.cssmin())
+    .pipe(gulp.dest('./website/css')).on('error', gutil.log)
+});
+*/
 
 gulp.task('webserver', function(){
   gulp.src('./')
@@ -61,10 +71,10 @@ gulp.task('browserify',function(cb) {
 
 gulp.task('build', function() {
   runSequence(
-    ['browserify'],['webserver']
+    ['browserify'],['less'],['webserver']
   );
 });
 
 gulp.task('watch', function(){
-  gulp.watch('./js/*.js',['browserify'])
+  gulp.watch(['./js/*.js','./less/*.less'],['less','browserify'])
 })
