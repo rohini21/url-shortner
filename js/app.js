@@ -27,33 +27,11 @@ class App extends React.Component {
 			return
 		}
 
-		rest('http://localhost:9001/?url='+url)
+		rest('http://localhost:9001/url/?url='+url)
 		.then(function(data){
 			self.setState({
 				url: data.entity
 			})
-		})
-	}
-	
-	test() {
-		var self = this;
-		var postObj = {
-				method  : "POST",
-				path    :"http://localhost:9001/test",
-				entity  : {
-				data    : "xyz"
-				},
-				params  : {},
-				headers : {
-					"Access-Control-Allow-Origin": "*",
-					"Access-Control-Allow-Headers": "X-Requested-With",
-					"crossDomain": true
-				}
-		}
-
-		client(postObj)
-		.then(function(data){
-			console.log("data in then-----",data);
 		})
 	}
 	
@@ -75,11 +53,10 @@ class App extends React.Component {
 					<div className="output-wrap">
 						<h2>Shortened URL</h2>
 						<div className="output">
-							<a href={url} type="text">{url}</a>
+							<a href={url} type="text" target="_blank">{url}</a>
 						</div>
 					</div>
 				</div>
-				<button onClick={this.test.bind(this)}>Test</button>
 			</div>
 		)
 	}

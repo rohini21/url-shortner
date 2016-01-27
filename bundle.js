@@ -90,39 +90,17 @@ var App = function (_React$Component) {
 				return;
 			}
 
-			(0, _rest2.default)('http://localhost:9001/?url=' + url).then(function (data) {
+			(0, _rest2.default)('http://localhost:9001/url/?url=' + url).then(function (data) {
 				self.setState({
 					url: data.entity
 				});
 			});
 		}
 	}, {
-		key: 'test',
-		value: function test() {
-			var self = this;
-			var postObj = {
-				method: "POST",
-				path: "http://localhost:9001/test",
-				entity: {
-					data: "xyz"
-				},
-				params: {},
-				headers: {
-					"Access-Control-Allow-Origin": "*",
-					"Access-Control-Allow-Headers": "X-Requested-With",
-					"crossDomain": true
-				}
-			};
-
-			client(postObj).then(function (data) {
-				console.log("data in then-----", data);
-			});
-		}
-	}, {
 		key: 'render',
 		value: function render() {
 			var url = this.state.url;
-			return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement('div', { className: 'about col-md-12' }, _react2.default.createElement('div', { className: 'jumbotron header' }, _react2.default.createElement('h1', null, 'Welcome to Snipper'))), _react2.default.createElement('div', { className: 'col-md-12 main' }, _react2.default.createElement('p', null, 'Snip your url to a smalller one!'), _react2.default.createElement('input', { ref: 'input', type: 'text' }), _react2.default.createElement('div', { className: 'button' }, _react2.default.createElement('button', { className: 'btn btn-cus', onClick: this.shortenURL.bind(this) }, 'Snip')), _react2.default.createElement('div', { className: 'output-wrap' }, _react2.default.createElement('h2', null, 'Shortened URL'), _react2.default.createElement('div', { className: 'output' }, _react2.default.createElement('a', { href: url, type: 'text' }, url)))), _react2.default.createElement('button', { onClick: this.test.bind(this) }, 'Test'));
+			return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement('div', { className: 'about col-md-12' }, _react2.default.createElement('div', { className: 'jumbotron header' }, _react2.default.createElement('h1', null, 'Welcome to Snipper'))), _react2.default.createElement('div', { className: 'col-md-12 main' }, _react2.default.createElement('p', null, 'Snip your url to a smalller one!'), _react2.default.createElement('input', { ref: 'input', type: 'text' }), _react2.default.createElement('div', { className: 'button' }, _react2.default.createElement('button', { className: 'btn btn-cus', onClick: this.shortenURL.bind(this) }, 'Snip')), _react2.default.createElement('div', { className: 'output-wrap' }, _react2.default.createElement('h2', null, 'Shortened URL'), _react2.default.createElement('div', { className: 'output' }, _react2.default.createElement('a', { href: url, type: 'text', target: '_blank' }, url)))));
 		}
 	}]);
 
@@ -805,6 +783,13 @@ function _inherits(subClass, superClass) {
 	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var mime = require('rest/interceptor/mime');
+var errorCode = require('rest/interceptor/errorCode');
+
+var client = _rest2.default.wrap(mime, {
+	mime: 'application/json'
+});
+
 var NF = function (_React$Component) {
 	_inherits(NF, _React$Component);
 
@@ -815,8 +800,8 @@ var NF = function (_React$Component) {
 	}
 
 	_createClass(NF, [{
-		key: 'componentDidMount',
-		value: function componentDidMount() {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
 			var loc = window.location;
 			var str = loc.hash.substring(2, loc.hash.indexOf('?'));
 			console.log("loc----", str);
@@ -824,6 +809,26 @@ var NF = function (_React$Component) {
 				console.log("data-----", data);
 				window.location = data.entity;
 			});
+
+			/*var postObj = {
+   	method  : "POST",
+   	path    :"http://localhost:9001/getUrl/",
+   	entity  : {},
+   	params  : {
+   		code    : str
+   	},
+   	dataType: 'jsonp',
+   	headers : {
+   		"crossDomain": true,
+   		"Access-Control-Allow-Origin": "*",
+   		"Access-Control-Allow-Headers": "X-Requested-With"
+   	}
+   }
+   	//rest('http://localhost:9001/test/')
+   client(postObj)
+   .then(function(data){
+   	console.log("data in then-----",data);
+   })*/
 		}
 	}, {
 		key: 'render',
@@ -837,7 +842,7 @@ var NF = function (_React$Component) {
 
 exports.default = NF;
 
-},{"react":214,"rest":216}],7:[function(require,module,exports){
+},{"react":214,"rest":216,"rest/interceptor/errorCode":221,"rest/interceptor/mime":222}],7:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
