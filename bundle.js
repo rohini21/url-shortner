@@ -97,10 +97,17 @@ var App = function (_React$Component) {
 			});
 		}
 	}, {
+		key: 'handleEnter',
+		value: function handleEnter(e) {
+			if (e.keyCode === 13) {
+				this.shortenURL();
+			}
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			var url = this.state.url;
-			return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement('div', { className: 'about col-md-12' }, _react2.default.createElement('div', { className: 'jumbotron header' }, _react2.default.createElement('h1', null, 'Welcome to Snipper'))), _react2.default.createElement('div', { className: 'col-md-12 main' }, _react2.default.createElement('p', null, 'Snip your url to a smalller one!'), _react2.default.createElement('input', { ref: 'input', type: 'text' }), _react2.default.createElement('div', { className: 'button' }, _react2.default.createElement('button', { className: 'btn btn-cus', onClick: this.shortenURL.bind(this) }, 'Snip')), _react2.default.createElement('div', { className: 'output-wrap' }, _react2.default.createElement('h2', null, 'Shortened URL'), _react2.default.createElement('div', { className: 'output' }, _react2.default.createElement('a', { href: url, type: 'text', target: '_blank' }, url)))));
+			return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement('div', { className: 'about col-md-12' }, _react2.default.createElement('div', { className: 'jumbotron header' }, _react2.default.createElement('h1', null, 'Welcome to Snipper'))), _react2.default.createElement('div', { className: 'col-md-12 main' }, _react2.default.createElement('p', null, 'Snip your url to a smalller one!'), _react2.default.createElement('input', { ref: 'input', type: 'text', onKeyDown: this.handleEnter.bind(this) }), _react2.default.createElement('div', { className: 'button' }, _react2.default.createElement('button', { className: 'btn btn-cus', onClick: this.shortenURL.bind(this) }, 'Snip')), _react2.default.createElement('div', { className: 'output-wrap' }, _react2.default.createElement('h2', null, 'Shortened URL'), _react2.default.createElement('div', { className: 'output' }, _react2.default.createElement('a', { href: url, type: 'text', target: '_blank' }, url)))));
 		}
 	}]);
 

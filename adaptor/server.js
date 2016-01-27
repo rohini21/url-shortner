@@ -2,14 +2,11 @@ var express    = require('express');
 var app        = express();
 
 var mongoose   = require("mongoose");
-var cors 			 = require('cors');
 var Model 		 = require("./schema").Model;
 var userHelper = require("./user-helper");
-//app.use(cors());
 
 mongoose.connect('mongodb://localhost/urlShortner')
 var db = mongoose.connection
-
 
 db.once('open', function(callback) {
 	console.log("connected to urlShortner")

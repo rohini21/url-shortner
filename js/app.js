@@ -34,7 +34,12 @@ class App extends React.Component {
 			})
 		})
 	}
-	
+
+	handleEnter(e) {
+		if(e.keyCode === 13){
+      this.shortenURL()
+    }
+	}
 	render() {
 		var url = this.state.url;
 		return (
@@ -46,7 +51,7 @@ class App extends React.Component {
 				</div>
 				<div className="col-md-12 main">	
 					<p>Snip your url to a smalller one!</p>
-					<input ref="input" type="text" />
+					<input ref="input" type="text" onKeyDown={this.handleEnter.bind(this)} />
 					<div className="button">
 						<button className="btn btn-cus" onClick={this.shortenURL.bind(this)}>Snip</button>
 					</div>
